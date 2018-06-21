@@ -8,7 +8,10 @@ package dao;
 import conexion.Conexion;
 import interfaces.metodos;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import modelo.Filtro;
@@ -73,9 +76,10 @@ public class FiltroDao implements metodos<Filtro>{
             System.out.println(c.getNumAfiliacion());
             ps = con.getCnx().prepareStatement(SQL_UPDATE);
             ps.setString(1, c.getNombres());
-            ps.setInt(2,c.get);
-            ps.setBoolean(3, c.isExistencia());
-            ps.setString(4, c.getCodigo());
+            ps.setString(2,c.getApellidos());
+            ps.setString(3, c.getProfesion());
+            ps.setString(4, c.getNumAfiliacion());
+            ps.setBoolean(5, c.isExistencia());
             if(ps.executeUpdate() > 0){
                 return true;
             }
@@ -99,7 +103,7 @@ public class FiltroDao implements metodos<Filtro>{
             
             rs = ps.executeQuery();
             while(rs.next()){
-                f = new Filtro (rs.getInt(1),rs.getString(2),rs.getString(3),rs.getInt(4),rs.getBoolean(5));
+                f = new Filtro (rs.getInt(1),rs.getString(2),rs.getString(3),rs.getString(4),rs.getInt(5),rs.getString(6),rs.getBoolean(7));
             }
             rs.close();
         }catch (SQLException ex){
@@ -120,7 +124,7 @@ public class FiltroDao implements metodos<Filtro>{
             s = con.getCnx().prepareStatement(SQL_READALL);
             rs = s.executeQuery(SQL_READALL);
             while(rs.next()){
-                all.add(new Filtro(rs.getInt(1),rs.getString(2),rs.getString(3),rs.getInt(4), rs.getBoolean(5)));
+                all.add(new Filtro(rs.getInt(1),rs.getString(2),rs.getString(3),rs.getString(4),rs.getInt(5),rs.getString(6),rs.getBoolean(7)));
             }
             rs.close();
         }catch(SQLException ex){
