@@ -5,6 +5,8 @@
  */
 package cortolab1;
 
+import vista.Consulta;
+
 /**
  *
  * @author LN710Q
@@ -15,7 +17,7 @@ public class CortoLab1 {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        // TODO code application logic here
+        new Consulta().setVisible(true);
     }
     
 }

@@ -31,7 +31,7 @@ public class Filtro {
         this.existencia = existencia;
     }
 
-    public Filtro(String numAfiliacion, String nombres, String apellidos, int edad, String profesion, boolean existencia) {
+    public Filtro(String numAfiliacion, String nombres, String apellidos, String profesion, int edad, boolean existencia) {
         this.numAfiliacion = numAfiliacion;
         this.nombres = nombres;
         this.apellidos = apellidos;

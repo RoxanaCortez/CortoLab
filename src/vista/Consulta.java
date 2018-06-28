@@ -7,6 +7,7 @@ package vista;
 
 import dao.FiltroDao;
 import java.awt.Container;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import javax.swing.ButtonGroup;
@@ -14,6 +15,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
@@ -71,6 +73,7 @@ public class Consulta extends JFrame{
         container.add(eliminar);
         container.add(limpiar);
         container.add(table);
+        container.add(profesion);
         setSize (600,600);
         eventos();
         
@@ -85,10 +88,10 @@ public class Consulta extends JFrame{
         //Arreglar coordenadas
         lblnumAfiliado.setBounds(10, 10, ANCHOC, ALTOC);
         lblNombre.setBounds(10, 60, ANCHOC, ALTOC);
-        lblApellidos.setBounds(250, 60, ANCHOC, ALTOC);
-        lblEdad.setBounds(10, 60, ANCHOC, ALTOC);
-        lblProfesion.setBounds(250, 60, ANCHOC, ALTOC);
-        lblExistencia.setBounds(10, 140, ANCHOC, ALTOC);
+        lblApellidos.setBounds(280, 60, ANCHOC, ALTOC);
+        lblEdad.setBounds(10, 100, ANCHOC, ALTOC);
+        lblProfesion.setBounds(10, 140, ANCHOC, ALTOC);
+        lblExistencia.setBounds(10, 180, ANCHOC, ALTOC);
     }
     
     public final void formulario(){
@@ -107,20 +110,22 @@ public class Consulta extends JFrame{
         limpiar = new JButton("Limpiar");
         
         table = new JPanel();
-        profesion.addItem("FRAM");
-        profesion.addItem("WIX");
-        profesion.addItem("Luber Finer");
-        profesion.addItem("OSK");
+        profesion.addItem("Ingeniero");
+        profesion.addItem("Mecanico");
+        profesion.addItem("Profesor");
+        profesion.addItem("Arquitecto");
         
         existencia = new ButtonGroup();
         existencia.add(si);
         existencia.add(no);
         
         numAfiliado.setBounds(140,10,ANCHOC,ALTOC);
-        nombre.setBounds(140,60,ANCHOC,ALTOC);
-        apellidos.setBounds(140,100,ANCHOC,ALTOC);
-        si.setBounds(140,140,50,ALTOC);
-        no.setBounds(210,140,50,ALTOC);
+        nombre.setBounds(140, 60,ANCHOC,ALTOC);
+        apellidos.setBounds(350,60,ANCHOC,ALTOC);
+        edad.setBounds(140,100,ANCHOC,ALTOC);
+        profesion.setBounds(140,150,ANCHOC,ALTOC);
+        si.setBounds(180,180,50,ALTOC);
+        no.setBounds(230,180,50,ALTOC);
         
         buscar.setBounds(300, 10, ANCHOC, ALTOC);
         insertar.setBounds(10, 210, ANCHOC, ALTOC);
@@ -157,7 +162,7 @@ public class Consulta extends JFrame{
         ArrayList<Filtro> filtros = fd.readAll();
         
         for(Filtro fi: filtros){
-            tm.addRow(new Object[]{fi.getApellidos(),fi.getNombres(),fi.getNumAfiliacion(),fi.isExistencia(), fi.getEdad()});
+            tm.addRow(new Object[]{fi.getNumAfiliacion(), fi.getNombres(), fi.getApellidos(), fi.getEdad(), fi.getProfesion(), fi.isExistencia()});
         }
         resultados.setModel(tm);
     }
@@ -166,7 +171,7 @@ public class Consulta extends JFrame{
             @Override
             public void actionPerformed(ActionEvent e) {
                 FiltroDao fd = new FiltroDao();
-                Filtro f = new Filtro(codigo.getText(), marca.getSelectedItem().toString(),Integer.parseInt(stock.getText()),true);
+                Filtro f = new Filtro(numAfiliado.getText(), nombre.getText(), apellidos.getText(),profesion.getSelectedItem().toString(),Integer.parseInt(edad.getText()),true);
                 
                 if(no.isSelected()){
                     f.setExistencia(false);
@@ -184,7 +189,7 @@ public class Consulta extends JFrame{
             @Override
             public void actionPerformed(ActionEvent e) {
                 FiltroDao fd = new FiltroDao();
-                Filtro f = new Filtro(codigo.getText(),marca.getSelectedItem().toString(),Integer.parseInt(stock.getText()),true);
+                Filtro f = new Filtro(numAfiliado.getText(), nombre.getText(), apellidos.getText(),profesion.getSelectedItem().toString(),Integer.parseInt(edad.getText()),true);
                 
                 if(no.isSelected()){
                     f.setExistencia(false);
@@ -202,7 +207,7 @@ public class Consulta extends JFrame{
             @Override
             public void actionPerformed(ActionEvent e) {
                 FiltroDao fd = new FiltroDao();
-                if(fd.delete(codigo.getText())){
+                if(fd.delete(numAfiliado.getText())){
                     JOptionPane.showMessageDialog(null, "Filtro eliminado con exito");
                     limpiarCampos();
                     llenarTabla();
@@ -215,13 +220,15 @@ public class Consulta extends JFrame{
             @Override
             public void actionPerformed(ActionEvent e) {
                 FiltroDao fd = new FiltroDao();
-                Filtro f = fd.read(codigo.getText());
+                Filtro f = fd.read(numAfiliado.getText());
                 if(f== null){
                     JOptionPane.showMessageDialog(null, "El filtro buscado no se ha encontrado");
                 }else{
-                    codigo.setText(f.getCodigo());
-                    marca.setSelectedItem(f.getMarca());
-                    stock.setText(Integer.toString(f.getStock()));
+                    numAfiliado.setText(f.getNumAfiliacion());
+                    nombre.setText(f.getNombres());
+                    apellidos.setText(f.getApellidos());
+                    profesion.setSelectedItem(f.getProfesion());
+                    edad.setText(Integer.toString(f.getEdad()));
                     
                     if(f.isExistencia()){
                         si.setSelected(true);
@@ -239,9 +246,11 @@ public class Consulta extends JFrame{
         });
     }
     public void limpiarCampos(){
-        codigo.setText("");
-        marca.setSelectedItem("FRAM");
-        stock.setText("");
+        numAfiliado.setText("");
+        nombre.setText("");
+        apellidos.setText("");
+        profesion.setSelectedItem("FRAM");
+        edad.setText("");
     }
     public static void main(String[] args){
         java.awt.EventQueue.invokeLater(new Runnable() {
